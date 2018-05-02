@@ -25,7 +25,7 @@
                     if (isNaN(value)) {
                         return !isNaN(arg);
                     }
-
+                    //todo: 对象的相等待修复
                     if (is.call(value, 'Object') || is.call(value, 'Array')) {
                         return JSON.stringify(value) !== JSON.stringify(arg);
                     }
@@ -50,7 +50,7 @@
             type: getIsOrIsNot(arg, is),
         };
 
-        _expect.type.not = getIsOrIsNot(arg, isNot)
+        _expect.type.not = getIsOrIsNot(arg, isNot);
 
         // 数组会有has的断言属性
         if (is.call(arg, 'Array')) {
