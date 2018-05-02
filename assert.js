@@ -19,7 +19,20 @@
 
     var expect = function (arg) {
         var _expect = {
+            not: {
+                equal: function (value) {
+                    // 对NaN的特殊判断
+                    if (isNaN(value)) {
+                        return !isNaN(arg);
+                    }
 
+                    if (is.call(value, 'Object') || is.call(value, 'Array')) {
+                        return JSON.stringify(value) !== JSON.stringify(arg);
+                    }
+
+                    return value !== arg;
+                }
+            },
             // 严格相等
             equal: function (value) {
                 // 对NaN的特殊判断
@@ -34,33 +47,10 @@
                 return value === arg;
             },
 
-            type: {
-                is: function (type) {
-                    return is.call(arg, type);
-                },
-                isNumber: function () {
-                    return is.call(arg, 'Number');
-                },
-                isString: function () {
-                    return is.call(arg, 'String');
-                },
-                isArray: function () {
-                    return is.call(arg, 'Array');
-                },
-                isNull: function () {
-                    return is.call(arg, 'Null');
-                },
-                isObject: function () {
-                    return is.call(arg, 'Object');
-                },
-                isBoolean: function () {
-                    return is.call(arg, 'Boolean');
-                },
-                isUndefined: function () {
-                    return is.call(arg, 'Undefined');
-                },
-            },
+            type: getIsOrIsNot(arg, is),
         };
+
+        _expect.type.not = getIsOrIsNot(arg, isNot)
 
         // 数组会有has的断言属性
         if (is.call(arg, 'Array')) {
@@ -69,6 +59,15 @@
                 var hasFlag = true;
                 _args.map(function (_arg) {
                     if (arg.indexOf(_arg) === -1) hasFlag = false;
+                });
+                return hasFlag;
+            };
+
+            _expect.not.has = function () {
+                var _args = Array.prototype.slice.call(arguments);
+                var hasFlag = true;
+                _args.map(function (_arg) {
+                    if (arg.indexOf(_arg) !== -1) hasFlag = false;
                 });
                 return hasFlag;
             }
@@ -85,6 +84,16 @@
                         if (_keys.indexOf(_arg) === -1) hasFlag = false;
                     });
                     return hasFlag;
+                },
+                not: {
+                    has: function () {
+                        var _args = Array.prototype.slice.call(arguments);
+                        var hasFlag = true;
+                        _args.map(function (_arg) {
+                            if (_keys.indexOf(_arg) !== -1) hasFlag = false;
+                        });
+                        return hasFlag;
+                    },
                 }
 
 
@@ -98,8 +107,17 @@
                         if (_values.indexOf(_arg) === -1) hasFlag = false;
                     });
                     return hasFlag;
+                },
+                not: {
+                    has: function () {
+                        var _args = Array.prototype.slice.call(arguments);
+                        var hasFlag = true;
+                        _args.map(function (_arg) {
+                            if (_values.indexOf(_arg) !== -1) hasFlag = false;
+                        });
+                        return hasFlag;
+                    },
                 }
-
 
             }
         }
@@ -111,7 +129,39 @@
 
     var is = function (type) {
         return toString.call(this) === '[object ' + type + ']';
-    }
+    };
+    var isNot = function (type) {
+        return toString.call(this) !== '[object ' + type + ']';
+    };
+
+    var getIsOrIsNot = function (arg, isOrNotIs) {
+        return  {
+            is: function (type) {
+                return isOrNotIs.call(arg, type);
+            },
+            isNumber: function () {
+                return isOrNotIs.call(arg, 'Number');
+            },
+            isString: function () {
+                return isOrNotIs.call(arg, 'String');
+            },
+            isArray: function () {
+                return isOrNotIs.call(arg, 'Array');
+            },
+            isNull: function () {
+                return isOrNotIs.call(arg, 'Null');
+            },
+            isObject: function () {
+                return isOrNotIs.call(arg, 'Object');
+            },
+            isBoolean: function () {
+                return isOrNotIs.call(arg, 'Boolean');
+            },
+            isUndefined: function () {
+                return isOrNotIs.call(arg, 'Undefined');
+            },
+        }
+    };
 
     return {
         expect: expect
