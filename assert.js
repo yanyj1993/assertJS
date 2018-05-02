@@ -19,31 +19,7 @@
 
     var expect = function (arg) {
         var _expect = {
-            value: arg,
-            is: function (type) {
-                return is.call(arg, type);
-            },
-            isNumber: function () {
-                return is.call(arg, 'Number');
-            },
-            isString: function () {
-                return is.call(arg, 'String');
-            },
-            isArray: function () {
-                return is.call(arg, 'Array');
-            },
-            isNull: function () {
-                return is.call(arg, 'Null');
-            },
-            isObject: function () {
-                return is.call(arg, 'Object');
-            },
-            isBoolean: function () {
-                return is.call(arg, 'Boolean');
-            },
-            isUndefined: function () {
-                return is.call(arg, 'Undefined');
-            },
+
             // 严格相等
             equal: function (value) {
                 // 对NaN的特殊判断
@@ -56,7 +32,34 @@
                 }
 
                 return value === arg;
-            }
+            },
+
+            type: {
+                is: function (type) {
+                    return is.call(arg, type);
+                },
+                isNumber: function () {
+                    return is.call(arg, 'Number');
+                },
+                isString: function () {
+                    return is.call(arg, 'String');
+                },
+                isArray: function () {
+                    return is.call(arg, 'Array');
+                },
+                isNull: function () {
+                    return is.call(arg, 'Null');
+                },
+                isObject: function () {
+                    return is.call(arg, 'Object');
+                },
+                isBoolean: function () {
+                    return is.call(arg, 'Boolean');
+                },
+                isUndefined: function () {
+                    return is.call(arg, 'Undefined');
+                },
+            },
         };
 
         // 数组会有has的断言属性
